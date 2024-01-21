@@ -1,0 +1,117 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = 'https://maven.blamejared.com' }
+		maven {
+			name = "Sponge"
+			url = "https://repo.spongepowered.org/repository/maven-public"
+		}
+	}
+	dependencies {
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath 'org.spongepowered:mixingradle:0.7+'
+	}
+}
+
+plugins {
+	id("java")
+	id("eclipse")
+	id("org.spongepowered.gradle.plugin") version "2.0.2"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+group = "sawfowl.nochatreports"
+version = "${major}.${minor}.${patch}-${api}-${suffix}"
+
+java {
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		name = "Sponge"
+		url = "https://repo.spongepowered.org/repository/maven-public"
+	}
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+minecraft {
+	mappings channel: 'official', version: '1.19.4'
+}
+
+dependencies {
+	minecraft 'net.minecraftforge:forge:1.19.4-45.2.0'
+	implementation "org.spongepowered:spongeapi:${api}"
+	//annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	implementation 'org.spongepowered:mixin:0.8.5'
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	implementation project(':vanilla')
+	//implementation fileTree(dir: 'libs', include: '*.jar')
+}
+
+sponge {
+	apiVersion("${api}")
+	loader {
+		name("java_plain")
+		version("1.0")
+	}
+	license("GPL-3.0")
+	plugin(project.name.toLowerCase()) {
+		displayName(project.name)
+		version("${project.version}")
+		entrypoint("${project.group}.${rootProject.name}")
+		description("Plugin for disabling chat reports.")
+		contributor("SawFowl") {
+			description("Lead Developer")
+		}
+		dependency("spongeapi") {
+			optional(false)
+			loadOrder("after")
+			version("${api}")
+		}
+	}
+}
+
+jar {
+	duplicatesStrategy= DuplicatesStrategy.EXCLUDE
+	from {
+		subprojects.collect { it.sourceSets.main.output }
+	}
+	println("Processing manifest...")	
+
+	manifest {
+		attributes([
+			"MixinConnector": "${project.group}.MixinConnector"
+		])
+	}
+}
+
+mixin {
+	add sourceSets.main, "nochatreports.refmap.json"
+	defaultObfuscationEnv "searge"
+}
+
+task deobfJar(type: Jar) { // Generate deobfuscated
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task sourceJar(type: Jar) { // Generate sources
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+tasks.build.dependsOn('sourceJar', 'deobfJar')
+
+artifacts {
+    archives deobfJar
+    archives sourceJar
+    archives jar
+}

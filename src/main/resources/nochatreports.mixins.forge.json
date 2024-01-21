@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "sawfowl.nochatreports.mixins.forge",
+  "compatibilityLevel": "JAVA_17",
+  "verbose": true,
+  "mixins": [
+	"MixinServerStatus",
+	"MixinFriendlyByteBuf",
+	"MixinServerboundChatPacket",
+	"MixinServerGamePacketListenerImpl",
+	"MixinPlayerList",
+	"MixinServerboundChatSessionUpdatePacket",
+	"MixinServerboundChatCommandPacket",
+	"MixinDedicatedServer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "nochatreports.refmap.json"
+}
