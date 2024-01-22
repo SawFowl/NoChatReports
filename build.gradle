@@ -33,10 +33,6 @@ subprojects {
 	}
 }
 
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}
-
 subprojects.each { subproject -> evaluationDependsOn(subproject.path)}
 
 task allJar(type: Jar, dependsOn: subprojects.assemble) {
