@@ -2,11 +2,6 @@ buildscript {
 	repositories {
 		mavenCentral()
 		maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = 'https://maven.blamejared.com' }
-		maven {
-			name = "Sponge"
-			url = "https://repo.spongepowered.org/repository/maven-public"
-		}
 	}
 	dependencies {
 		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
@@ -17,46 +12,15 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-repositories {
-	mavenCentral()
-	maven {
-		name = "Sponge"
-		url = "https://repo.spongepowered.org/repository/maven-public"
-	}
-}
-
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}
-
 minecraft {
 	mappings channel: 'official', version: '1.19.4'
 }
 
 dependencies {
 	minecraft 'net.minecraftforge:forge:1.19.4-45.2.0'
-	//annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	implementation 'org.spongepowered:mixin:0.8.5'
+    implementation project(':core')
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	//implementation fileTree(dir: 'libs', include: '*.jar')
-}
-
-task deobfJar(type: Jar) { // Generate deobfuscated
-    from sourceSets.main.output
-    classifier = 'deobf'
-}
-
-task sourceJar(type: Jar) { // Generate sources
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-tasks.build.dependsOn('sourceJar', 'deobfJar')
-
-artifacts {
-    archives deobfJar
-    archives sourceJar
-    archives jar
 }
 
 mixin {
