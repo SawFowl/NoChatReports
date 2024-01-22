@@ -23,7 +23,6 @@ public class NoChatReports {
 	private PluginContainer pluginContainer;
 	private Logger logger;
 	private Path configDir;
-	private ForgeUtils forgeUtils = isForge() ? new ForgeUtils() : null;
 
 	private ConfigurationReference<CommentedConfigurationNode> configurationReference;
 	private ValueReference<Config, CommentedConfigurationNode> config;
@@ -68,19 +67,6 @@ public class NoChatReports {
 	public Config getConfig() {
 		if(config == null) saveConfig();
 		return config.get();
-	}
-
-	public ForgeUtils getForgeUtils() {
-		return forgeUtils;
-	}
-
-	private boolean isForge() {
-		try {
-			Class.forName("net.minecraftforge.fml.javafmlmod.FMLModContainer");
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 }
