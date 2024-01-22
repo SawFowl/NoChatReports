@@ -14,10 +14,10 @@ sponge {
 		version("1.0")
 	}
 	license("GPL-3.0")
-	plugin(project.name.toLowerCase()) {
-		displayName(project.name)
-		version("${project.version}")
-		entrypoint("${project.group}.${rootProject.name}")
+	plugin(rootProject.name.toLowerCase()) {
+		displayName(rootProject.name)
+		version("${rootProject.version}")
+		entrypoint("${rootProject.group}.${rootProject.name}")
 		description("Plugin for disabling chat reports.")
 		contributor("SawFowl") {
 			description("Lead Developer")
